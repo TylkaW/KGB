@@ -1,0 +1,20 @@
+## Interface: 11200
+## Title: KBG|cff7fff7f -Ace2-|r
+## Notes: Mix between NSA, KGB and DGSE
+## Author: Tylka
+## Version: 1.0
+## X-Category: Interface Enhancements
+
+## OptionalDeps: Ace2 DewdropLib BigWigs
+## X-Embeds: Ace2
+
+## SavedVariablesPerCharacter: KGBMinimap
+
+Libs\AceLibrary\AceLibrary.lua
+Libs\AceAddon-2.0\AceAddon-2.0.lua
+Libs\AceEvent-2.0\AceEvent-2.0.lua
+Libs\AceConsole-2.0\AceConsole-2.0.lua
+Libs\DewdropLib\Dewdrop-2.0.lua
+
+KGB.lua
+KGB.xml
