@@ -40,19 +40,19 @@ function KGB:OnInitialize()
 	KGBMinimapButton_OnInitialize()
 end
 
--- function KGB:OnEnable() -- {{{
-    -- -- Called when the addon is enabled
-	-- RaidOrganizerMinimapButton:GetNormalTexture():SetDesaturated(false)
-	-- RaidOrganizerMinimapButton:GetPushedTexture():SetDesaturated(false)
-	-- self:RegisterEvent("CHAT_MSG_ADDON")
--- end -- }}}
+function KGB:OnEnable() -- {{{
+    -- Called when the addon is enabled
+	RaidOrganizerMinimapButton:GetNormalTexture():SetDesaturated(false)
+	RaidOrganizerMinimapButton:GetPushedTexture():SetDesaturated(false)
+	self:RegisterEvent("CHAT_MSG_ADDON")
+end -- }}}
 
--- function KGB:OnDisable() -- {{{
-    -- -- Called when the addon is disabled
-	-- RaidOrganizerMinimapButton:GetNormalTexture():SetDesaturated(true)
-	-- RaidOrganizerMinimapButton:GetPushedTexture():SetDesaturated(true)
-	-- self:UnregisterAllEvents();
--- end -- }}}
+function KGB:OnDisable() -- {{{
+    -- Called when the addon is disabled
+	RaidOrganizerMinimapButton:GetNormalTexture():SetDesaturated(true)
+	RaidOrganizerMinimapButton:GetPushedTexture():SetDesaturated(true)
+	self:UnregisterAllEvents();
+end -- }}}
 
 function KGB:CreateKGBMenu(level, value)
 	if level == 1 then
