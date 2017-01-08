@@ -115,10 +115,16 @@ function KGB:DoQuintessenceCheck()
 	else
 		QuintessenceString = QuintessenceString .. " if answer == 1 then SendAddonMessage('KGB', 'QUINT 1', 'RAID') end"
 	end
-	SendAddonMessage("BigWigs", "BWVS " .. QuintessenceString , "RAID", nil)
-	if self.Individual and UnitExists('target') then
-		QuintessenceString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. QuintessenceString .. " end"
+	if self.Individual then
+		if UnitExists('target') then
+			QuintessenceString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. QuintessenceString .. " end"
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("KGB : Just Target is checked, please take a target")
+			return
+		end
 	end
+	SendAddonMessage("BigWigs", "BWVS " .. QuintessenceString , "RAID", nil)
+
 end
 
 function KGB:QuintessenceRcvSync(msg, sender)
@@ -127,7 +133,7 @@ function KGB:QuintessenceRcvSync(msg, sender)
 		self.KGB_color_table[sender] = {0,1,0}
 	else
 		self.KGB_value_table[sender] = "No"
-		self.KGB_color_table[sender] = {1,0,0}
+		self.KGB_color_table[sender] = {1,0.5,0}
 	end
 end
 
@@ -142,7 +148,12 @@ function KGB:DoOnyxiaBagCheck()
 		OnyxiaBagString = OnyxiaBagString .. " SendAddonMessage('KGB', 'ONYBAG '..count, 'RAID');"
 	end
 	if self.Individual then
-		OnyxiaBagString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. OnyxiaBagString .. " end"
+		if UnitExists('target') then
+			OnyxiaBagString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. OnyxiaBagString .. " end"
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("KGB : Just Target is checked, please take a target")
+			return
+		end
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. OnyxiaBagString, "RAID", nil)
 end
@@ -156,14 +167,19 @@ function KGB:DoOnyxiaCloakCheck()
 	self.KGB_value_table = {}
 	self.KGB_color_table = {}
 	infoRcved = "Onyxia Cloak"
-	local OnyxiaCloakString = "local answer=0;local _,_, itemCode = strfind(GetInventoryItemLink('player', 15),'(%d+):'); if (itemCode=='15138') then answer=1;end"
+	local OnyxiaCloakString = "local answer=0; if GetInventoryItemLink('player', 15) ~= nil then local _,_, itemCode = strfind(GetInventoryItemLink('player', 15),'(%d+):'); if (itemCode=='15138') then answer=1;end end"
 	if self.SyncMessage == false then
 		OnyxiaCloakString = OnyxiaCloakString .. " if answer == 0 then SendChatMessage('not wearing Onyxia Cloak', 'RAID') end"
 	else
 		OnyxiaCloakString = OnyxiaCloakString .. " SendAddonMessage('KGB', 'ONYCLOAK '..answer, 'RAID')"
 	end
 	if self.Individual then
-		OnyxiaCloakString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. OnyxiaCloakString .. " end"
+		if UnitExists('target') then
+			OnyxiaCloakString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. OnyxiaCloakString .. " end"
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("KGB : Just Target is checked, please take a target")
+			return
+		end
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. OnyxiaCloakString, "RAID", nil)
 end
@@ -174,7 +190,7 @@ function KGB:OnyxiaCloakRcvSync(msg, sender)
 		self.KGB_color_table[sender] = {0,1,0}
 	else
 		self.KGB_value_table[sender] = "No"
-		self.KGB_color_table[sender] = {1,0,0}
+		self.KGB_color_table[sender] = {1,0.5,0}
 	end
 end
 
@@ -189,7 +205,12 @@ function KGB:FollowMe()
 		-- OnyxiaCloakString = OnyxiaCloakString .. " SendAddonMessage('KGB', 'ONYCLOAK '..answer, 'RAID')"
 	-- end
 	if self.Individual then
-		FollowMeString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. FollowMeString .. " end"
+		if UnitExists('target') then
+			FollowMeString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. FollowMeString .. " end"
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("KGB : Just Target is checked, please take a target")
+			return
+		end
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. FollowMeString, "RAID", nil)
 end
