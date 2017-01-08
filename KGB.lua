@@ -117,7 +117,7 @@ function KGB:DoQuintessenceCheck()
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. QuintessenceString , "RAID", nil)
 	if self.Individual and UnitExists('target') then
-		QuintessenceString = "if UnitName('player') == '" .. UnitName('target') .. "' then" .. QuintessenceString .. " end"
+		QuintessenceString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. QuintessenceString .. " end"
 	end
 end
 
@@ -142,7 +142,7 @@ function KGB:DoOnyxiaBagCheck()
 		OnyxiaBagString = OnyxiaBagString .. " SendAddonMessage('KGB', 'ONYBAG '..count, 'RAID');"
 	end
 	if self.Individual then
-		OnyxiaBagString = "if UnitName('player') == '" .. UnitName('target') .. "' then" .. OnyxiaBagString .. " end"
+		OnyxiaBagString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. OnyxiaBagString .. " end"
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. OnyxiaBagString, "RAID", nil)
 end
@@ -163,7 +163,7 @@ function KGB:DoOnyxiaCloakCheck()
 		OnyxiaCloakString = OnyxiaCloakString .. " SendAddonMessage('KGB', 'ONYCLOAK '..answer, 'RAID')"
 	end
 	if self.Individual then
-		OnyxiaCloakString = "if UnitName('player') == '" .. UnitName('target') .. "' then" .. OnyxiaCloakString .. " end"
+		OnyxiaCloakString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. OnyxiaCloakString .. " end"
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. OnyxiaCloakString, "RAID", nil)
 end
@@ -189,7 +189,7 @@ function KGB:FollowMe()
 		-- OnyxiaCloakString = OnyxiaCloakString .. " SendAddonMessage('KGB', 'ONYCLOAK '..answer, 'RAID')"
 	-- end
 	if self.Individual then
-		FollowMeString = "if UnitName('player') == '" .. UnitName('target') .. "' then" .. FollowMeString .. " end"
+		FollowMeString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. FollowMeString .. " end"
 	end
 	SendAddonMessage("BigWigs", "BWVS " .. FollowMeString, "RAID", nil)
 end
