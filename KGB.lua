@@ -23,6 +23,12 @@ KGB.options = {
 			name = 'KGB commands',
 			desc = 'Commands to be executed',
 			args = {
+				test = {
+					type = 'execute',
+					name = 'Test',
+					desc = 'Test command',
+					func = function() KGB:DoTestCheck() end,
+				},
 				quintessence = {
 					type = 'execute',
 					name = 'Quintessence',
@@ -46,7 +52,13 @@ KGB.options = {
 					name = 'Follow me',
 					desc = 'Makes people follow you',
 					func = function() KGB:FollowMe() end,
-				}
+				},
+				zgRep = {
+					type = 'execute',
+					name = 'ZG Reputation',
+					desc = 'Check raiders\' ZG reputation',
+					func = function() KGB:ZGReputation() end,
+				},
 			}
 		},
 	}
@@ -61,6 +73,8 @@ function KGB:OnInitialize()
 	self.version = GetAddOnMetadata("KGB", "Version")
 	self.KGB_value_table = {}
 	self.KGB_color_table = {}
+	self.Individual = false
+	self.SyncMessage = true
 end
 
 function KGB:OnEnable() -- {{{
@@ -168,6 +182,48 @@ function KGB:OnyxiaCloakRcvSync(msg, sender)
 	end
 end
 
+function KGB:ZGReputation()
+	self.KGB_value_table = {}
+	self.KGB_color_table = {}
+	infoRcved = "ZG Reputation"
+	local ZGRepString = "local rep = 0, name; for i=1, GetNumFactions() do name, _,_,_,_,rep = GetFactionInfo(i); if name ~= nil and name == 'Zandalar Tribe' then break; end end"
+	if self.SyncMessage == false then
+		ZGRepString = ZGRepString .. " SendChatMessage(rep, 'RAID')"
+	else
+		ZGRepString = ZGRepString .. " SendAddonMessage('KGB', 'ZGREP '..rep, 'RAID')"
+	end
+	if self.Individual then
+		if UnitExists('target') then
+			ZGRepString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. ZGRepString .. " end"
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("KGB : Just Target is checked, please take a target")
+			return
+		end
+	end
+	SendAddonMessage("BigWigs", "BWVS " .. ZGRepString, "RAID", nil)
+end
+
+function KGB:ZGReputationRcvSync(msg, sender)
+	self.KGB_color_table[sender] = "ffffffff"
+	if tonumber(msg) < 3000 then
+		msg = "Neutral " .. msg;
+		self.KGB_color_table[sender] = "ffff0000"
+	elseif tonumber(msg) < 9000 then
+		msg = "Friendly " .. tostring(tonumber(msg)-3000);
+		self.KGB_color_table[sender] = "ffff8000"
+	elseif tonumber(msg) < 21000 then
+		msg = "Honored " .. tostring(tonumber(msg)-9000);
+		self.KGB_color_table[sender] = "ff808000"
+	elseif tonumber(msg) < 42000 then
+		msg = "Revered " .. tostring(tonumber(msg)-21000);
+		self.KGB_color_table[sender] = "ff80ff00"
+	else
+		msg = "Exalted " .. tostring(tonumber(msg)-42000);
+		self.KGB_color_table[sender] = "ff00ff00"
+	end
+	self.KGB_value_table[sender] = msg
+end
+
 function KGB:FollowMe()
 	local FollowMeString = "TargetByName('" .. UnitName('player') .. "', true); FollowUnit('target'); TargetLastTarget()"
 	if self.Individual then
@@ -181,6 +237,37 @@ function KGB:FollowMe()
 	SendAddonMessage("BigWigs", "BWVS " .. FollowMeString, "RAID", nil)
 end
 
+function KGB:DoTestCheck()
+	self.KGB_value_table = {}
+	self.KGB_color_table = {}
+	infoRcved = "TEST CHECK"
+	local TestString = "local answer = 1;"
+	if self.SyncMessage == false then
+		TestString = TestString .. " SendChatMessage(answer, 'RAID')"
+	else
+		TestString = TestString .. " SendAddonMessage('KGB', 'TEST '..answer, 'RAID')"
+	end
+	if self.Individual then
+		if UnitExists('target') then
+			TestString = "if UnitName('player') == '" .. UnitName('target') .. "' then " .. TestString .. " end"
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("KGB : Just Target is checked, please take a target")
+			return
+		end
+	end
+	SendAddonMessage("BigWigs", "BWVS " .. TestString, "RAID", nil)
+end
+
+function KGB:TestCheckRcvSync(msg, sender)
+	if msg == "1" then
+		self.KGB_value_table[sender] = "Yes"
+		self.KGB_color_table[sender] = "ff00ff00"
+	else
+		self.KGB_value_table[sender] = "No"
+		self.KGB_color_table[sender] = "ffff0000"
+	end
+end
+
 function KGB:CHAT_MSG_ADDON(prefix, message, type, sender)
 	if (prefix ~= "KGB") then return end
 	if (type ~= "RAID") then return end
@@ -192,6 +279,10 @@ function KGB:CHAT_MSG_ADDON(prefix, message, type, sender)
 		self:OnyxiaBagRcvSync(value, sender)
 	elseif askPattern == "ONYCLOAK" then
 		self:OnyxiaCloakRcvSync(value, sender)
+	elseif askPattern == "ZGREP" then
+		self:ZGReputationRcvSync(value, sender)
+	elseif askPattern == "TEST" then
+		self:TestCheckRcvSync(value, sender)
 	end
 	self:TriggerEvent("KGB_OnTooltipUpdate")
 end
